@@ -9,8 +9,9 @@
 
     <div class="clock">
       <div class="clock-face">
-        <div class="hand hour-hand"></div>
+        <div class="clock-pivot"></div>
         <div class="hand min-hand"></div>
+        <div class="hand hour-hand"></div>
         <div class="hand second-hand"></div>
       </div>
     </div>
@@ -62,12 +63,72 @@
       background:black;
       position: absolute;
       top:50%;
+      transform-origin: 100%; /* 100% puts pivot point at right side, instead of center (50% default) */
+      transform: rotate(90deg);
+      transition: all 0.05s;
+      transition-timing-function: cubic-bezier(0.3, 2.73, 1, 1);
     }
 
+    .hour-hand {
+      width: 35%;
+      left: 15%;
+    }
+
+    .second-hand {
+      background: #a10000;
+    }
+/*   meh, clock pivot?
+    .clock-pivot {
+      position: relative;
+      width: 10px;
+      height: 10px;
+      top: 50%;
+      left: 50%;
+      background: black;
+      border-radius: 50%;
+      transform: translateX(-5px);
+    }
+*/
   </style>
 
   <script>
 
+    const secondHand = document.querySelector('.second-hand');
+    const minHand = document.querySelector('.min-hand');
+    const hourHand = document.querySelector('.hour-hand');
+
+    function setDate() {
+      const now = new Date();
+
+      const seconds = now.getSeconds();
+      const secondsDegrees = ((seconds / 60) * 360) + 90;
+      if (seconds === 0) {
+        secondHand.style.transition = 'none';
+      } else {
+        secondHand.style.transition = '';
+      }
+      secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+
+      const minutes = now.getMinutes();
+      const minutesDegrees = ((minutes / 60) * 360) + 90;
+      if (minutes === 0) {
+        minHand.style.transition = 'none';
+      } else {
+        minHand.style.transition = '';
+      }
+      minHand.style.transform = `rotate(${minutesDegrees}deg)`;
+
+      const hours = now.getHours();
+      const hoursDegrees = ((hours / 12) * 360) + 90;
+      if (hours === 0) {
+        hourHand.style.transition = 'none';
+      } else {
+        hourHand.style.transition = '';
+      }
+      hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+    }
+
+    setInterval(setDate, 1000);
 
   </script>
 </body>
